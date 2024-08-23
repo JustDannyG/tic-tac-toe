@@ -26,10 +26,13 @@ function render() {
             if (value === 'circle') {
                 let svgCircle = generateSvgCircle();
                 tableHTML += '<td>';
-                tableHTML += svgCircle.outerHTML;
+                tableHTML += svgCircle;
                 tableHTML += '</td>';
             } else if (value === 'cross') {
-                tableHTML += '<td class="cross">X</td>';
+                let svgCross = generateSvgCross();
+                tableHTML += '<td>';
+                tableHTML += svgCross;
+                tableHTML += '</td>';
             } else {
                 tableHTML += '<td></td>';
             }
@@ -43,31 +46,32 @@ function render() {
 }
 
 function generateSvgCircle() {
-    let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    svg.setAttribute("width", "40px");
-    svg.setAttribute("height", "40px");
-    svg.setAttribute("viewBox", "0 0 40 40");
+    return `
+        <svg width="40px" height="40px" viewBox="0 0 40 40">
+            <circle cx="20" cy="20" r="18" fill="none" stroke="blue" stroke-width="4"
+                stroke-dasharray="113.097" stroke-dashoffset="113.097" transform="rotate(-90 20 20)">
+                <animate attributeName="stroke-dashoffset" from="113.097" to="0"
+                    dur="0.2s" fill="freeze" />
+            </circle>
+        </svg>
+    `;
+}
 
-    let circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-    circle.setAttribute("cx", "20");
-    circle.setAttribute("cy", "20");
-    circle.setAttribute("r", "18");
-    circle.setAttribute("fill", "none");
-    circle.setAttribute("stroke", "blue");
-    circle.setAttribute("stroke-width", "4");
-    circle.setAttribute("stroke-dasharray", "113.097");
-    circle.setAttribute("stroke-dashoffset", "113.097");
-    circle.setAttribute("transform", "rotate(-90 20 20)");
-
-    let animate = document.createElementNS("http://www.w3.org/2000/svg", "animate");
-    animate.setAttribute("attributeName", "stroke-dashoffset");
-    animate.setAttribute("from", "113.097");
-    animate.setAttribute("to", "0");
-    animate.setAttribute("dur", "200ms");
-    animate.setAttribute("fill", "freeze");
-
-    circle.appendChild(animate);
-    svg.appendChild(circle);
-
-    return svg;
+function generateSvgCross() {
+    return `
+        <svg width="80px" height="80px" viewBox="0 0 40 40">
+            <!-- Erste Linie des Kreuzes -->
+            <line x1="10" y1="10" x2="30" y2="30" stroke="yellow" stroke-width="2"
+                stroke-dasharray="28.28" stroke-dashoffset="28.28">
+                <animate attributeName="stroke-dashoffset" from="28.28" to="0"
+                    dur="0.2s" fill="freeze" />
+            </line>
+            <!-- Zweite Linie des Kreuzes -->
+            <line x1="30" y1="10" x2="10" y2="30" stroke="yellow" stroke-width="2"
+                stroke-dasharray="28.28" stroke-dashoffset="28.28">
+                <animate attributeName="stroke-dashoffset" from="28.28" to="0"
+                    dur="0.2s" begin="0.2s" fill="freeze" />
+            </line>
+        </svg>
+    `;
 }
