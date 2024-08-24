@@ -37,7 +37,7 @@ function render() {
     }
 
     tableHTML += '</table>';
-    document.getElementById('Content').innerHTML = tableHTML;
+    document.getElementById('content').innerHTML = tableHTML;
 }
 
 function checkWin() {
@@ -63,7 +63,7 @@ function checkWin() {
 
 function displayWinningLine(winInfo) {
     const { pattern } = winInfo;
-    
+
     // Bestimme die Position der Linie basierend auf dem Gewinnmuster
     const startCell = document.querySelectorAll('td')[pattern[0]];
     const endCell = document.querySelectorAll('td')[pattern[2]];
@@ -93,6 +93,7 @@ function displayWinningLine(winInfo) {
     line.style.transformOrigin = '0 0';
     line.style.left = `${startX}px`;
     line.style.top = `${startY}px`;
+    line.classList.add('winning-line');
 
     // Füge die Linie zum Spielfeld hinzu
     document.body.appendChild(line);
@@ -127,6 +128,28 @@ function handleCellClick(index) {
     if (winInfo) {
         displayWinningLine(winInfo);
     }
+}
+
+function resetGame() {
+    // Setze alle Felder auf null zurück
+    fields = [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+    ];
+    
+    // Entferne eventuell vorhandene Gewinnlinien
+    const lines = document.querySelectorAll('.winning-line');
+    lines.forEach(line => line.remove());
+
+    // Aktualisiere das Spielfeld
+    render();
 }
 
 function generateSvgCircle() {

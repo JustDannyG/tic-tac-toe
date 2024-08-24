@@ -13,7 +13,6 @@ body {
 }
 
 table {
-    margin-top: 100px;
     width: 300px;
     height: 300px;
     border-collapse: collapse;
@@ -63,4 +62,27 @@ table tr:last-child td {
 
 table tr td:last-child {
     border-right: 0;
+}
+
+button {
+    background-color: #87CEEB; /* Sky blue color */
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+    border-width: 2px;
+    border-color: black;
+    border: solid;
+}
+
+button:hover {
+    background-color: #4682B4; /* Darker sky blue color */
+    border-color: white;
+}
+
+#content {
+    margin-top: 100px;
+    margin-bottom: 50px;
 }
