@@ -40,15 +40,93 @@ function render() {
     document.getElementById('Content').innerHTML = tableHTML;
 }
 
+function checkWin() {
+    const winPatterns = [
+        [0, 1, 2], // obere Reihe
+        [3, 4, 5], // mittlere Reihe
+        [6, 7, 8], // untere Reihe
+        [0, 3, 6], // linke Spalte
+        [1, 4, 7], // mittlere Spalte
+        [2, 5, 8], // rechte Spalte
+        [0, 4, 8], // diagonale von oben links nach unten rechts
+        [2, 4, 6]  // diagonale von oben rechts nach unten links
+    ];
+
+    for (const pattern of winPatterns) {
+        const [a, b, c] = pattern;
+        if (fields[a] && fields[a] === fields[b] && fields[a] === fields[c]) {
+            return { pattern, winner: fields[a] };
+        }
+    }
+    return null;
+}
+
+function displayWinningLine(winInfo) {
+    const { pattern } = winInfo;
+    
+    // Bestimme die Position der Linie basierend auf dem Gewinnmuster
+    const startCell = document.querySelectorAll('td')[pattern[0]];
+    const endCell = document.querySelectorAll('td')[pattern[2]];
+
+    // Hole die Positionen und Größen der Zellen
+    const startRect = startCell.getBoundingClientRect();
+    const endRect = endCell.getBoundingClientRect();
+
+    // Berechne die Mitte der ersten und letzten Zelle
+    const startX = startRect.left + startRect.width / 2;
+    const startY = startRect.top + startRect.height / 2;
+    const endX = endRect.left + endRect.width / 2;
+    const endY = endRect.top + endRect.height / 2;
+
+    // Berechne die Länge und den Winkel der Linie
+    const length = Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2));
+    const angle = Math.atan2(endY - startY, endX - startX) * 180 / Math.PI;
+
+    // Erzeuge die Linie
+    const line = document.createElement('div');
+    line.style.position = 'absolute';
+    line.style.backgroundColor = 'white';
+    line.style.opacity = '0.7';
+    line.style.height = '4px';
+    line.style.width = `${length}px`;
+    line.style.transform = `rotate(${angle}deg)`;
+    line.style.transformOrigin = '0 0';
+    line.style.left = `${startX}px`;
+    line.style.top = `${startY}px`;
+
+    // Füge die Linie zum Spielfeld hinzu
+    document.body.appendChild(line);
+}
+
+function calculateAngle(pattern) {
+    const angleMap = {
+        '0,1,2': 0,   // obere Reihe horizontal
+        '3,4,5': 0,   // mittlere Reihe horizontal
+        '6,7,8': 0,   // untere Reihe horizontal
+        '0,3,6': 90,  // linke Spalte vertikal
+        '1,4,7': 90,  // mittlere Spalte vertikal
+        '2,5,8': 90,  // rechte Spalte vertikal
+        '0,4,8': 45,  // diagonale von oben links nach unten rechts
+        '2,4,6': -45  // diagonale von oben rechts nach unten links
+    };
+    return angleMap[pattern.sort().join(',')];
+}
+
 function handleCellClick(index) {
-    // Überprüfen, ob die Zelle bereits gefüllt ist
-    if (fields[index] !== null) return;
+    // Überprüfen, ob das Spiel bereits gewonnen wurde
+    if (checkWin() || fields[index] !== null) return;
 
     // Wechsle zwischen 'circle' und 'cross' basierend auf dem aktuellen Zustand
     const isCircleTurn = fields.filter(value => value !== null).length % 2 === 0;
     fields[index] = isCircleTurn ? 'circle' : 'cross';
 
     render();
+
+    // Überprüfen, ob der aktuelle Zug zum Sieg geführt hat
+    const winInfo = checkWin();
+    if (winInfo) {
+        displayWinningLine(winInfo);
+    }
 }
 
 function generateSvgCircle() {
