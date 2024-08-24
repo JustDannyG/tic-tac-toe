@@ -1,12 +1,12 @@
 let fields = [
-    'circle',
-    'circle',
-    'circle',
-    'circle',
     null,
     null,
-    'cross',
-    'cross',
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
     null
 ];
 
@@ -23,26 +23,32 @@ function render() {
             let index = i * 3 + j;
             let value = fields[index];
 
+            tableHTML += `<td onclick="handleCellClick(${index})">`;
+
             if (value === 'circle') {
-                let svgCircle = generateSvgCircle();
-                tableHTML += '<td>';
-                tableHTML += svgCircle;
-                tableHTML += '</td>';
+                tableHTML += generateSvgCircle();
             } else if (value === 'cross') {
-                let svgCross = generateSvgCross();
-                tableHTML += '<td>';
-                tableHTML += svgCross;
-                tableHTML += '</td>';
-            } else {
-                tableHTML += '<td></td>';
+                tableHTML += generateSvgCross();
             }
+
+            tableHTML += '</td>';
         }
         tableHTML += '</tr>';
     }
 
     tableHTML += '</table>';
-
     document.getElementById('Content').innerHTML = tableHTML;
+}
+
+function handleCellClick(index) {
+    // Überprüfen, ob die Zelle bereits gefüllt ist
+    if (fields[index] !== null) return;
+
+    // Wechsle zwischen 'circle' und 'cross' basierend auf dem aktuellen Zustand
+    const isCircleTurn = fields.filter(value => value !== null).length % 2 === 0;
+    fields[index] = isCircleTurn ? 'circle' : 'cross';
+
+    render();
 }
 
 function generateSvgCircle() {
